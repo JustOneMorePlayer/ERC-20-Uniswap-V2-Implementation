@@ -1,4 +1,4 @@
-#ERC20 & Uniswap V2 Implementation
+# ERC20 & Uniswap V2 Implementation
 
 ACTIVE PROJECT
 
