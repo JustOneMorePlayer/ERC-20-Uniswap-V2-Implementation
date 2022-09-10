@@ -1,13 +1,5 @@
-# Sample Hardhat Project
+#ERC20 & Uniswap V2 Implementation
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+ACTIVE PROJECT
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+An implementation from scratch of a token ERC-20 and the AMM from Uniswap V2 following the standard from [EIP-20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/#top) and [Uniswap's documentation](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://uniswap.org/whitepaper.pdf).
