@@ -16,4 +16,20 @@ module.exports = async () => {
     args: ["Wrapped Ethereum", "WETH"],
     log: true,
   })
+
+  await deployments.deploy("", {
+    from: acc00,
+    contract: "WrappedToken",
+    args: ["Wrapped Ethereum", "WETH"],
+    log: true,
+  })
+
+  await deployments.deploy("Math", {
+    from: acc00,
+    contract: "Math",
+    args: [],
+    log: true,
+  })
+
+
 }

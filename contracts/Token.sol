@@ -4,7 +4,6 @@ pragma solidity ^0.8.9;
 error ERC20Token__DontHaveEnoughToSpend();
 error ERC20Token__DontHaveEnoughAllowed();
 error Token__NotOwner();
-error LiquidityPoolToken__PoolNotEmpty();
 
 abstract contract ERC20Token {
     string public name;
@@ -109,30 +108,33 @@ contract Token is ERC20Token {
 }
 
 contract LiquidityPoolToken is ERC20Token {
-    ERC20Token contractWETH;
-    ERC20Token contractTA;
+    address public owner;
+
+    modifier onlyOwner() {
+        if (msg.sender != owner) revert Token__NotOwner();
+        _;
+    }
 
     constructor(
         string memory _name,
-        string memory _symbol,
-        address _addressWETH,
-        address _addressTA
+        string memory _symbol
     ) ERC20Token(_name, _symbol) {
-        contractWETH = ERC20Token(_addressWETH);
-        contractTA = ERC20Token(_addressTA);
+        name = _name;
+        symbol = _symbol;
         totalSupply = 0;
+        owner = msg.sender;
     }
 
-    //modifier
-
-    /**
-     * Sets the product constant and the exchange rate between WETH and TA for the first time
-     */
-    function firstAddLiquidity() public {
-        if (
-            contractWETH.getBalanceOf(address(this)) != 0 ||
-            contractTA.getBalanceOf(address(this)) != 0 ||
-            totalSupply != 0
-        ) revert LiquidityPoolToken__PoolNotEmpty();
+    function mint(address _liquidityProvider, uint256 _value) public onlyOwner{
+        balance[_liquidityProvider] += _value;
+        totalSupply += _value;
     }
+
+    function burn(address _liquidityProvider, uint256 _value) public onlyOwner enoughAmountHolded(_liquidityProvider, _value){
+        balance[_liquidityProvider] -= _value;
+        totalSupply -= _value;
+    }
+ 
+
+
 }

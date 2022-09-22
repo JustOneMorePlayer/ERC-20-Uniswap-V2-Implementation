@@ -3,7 +3,7 @@ require("hardhat-deploy");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.9",
+  solidity: "0.8.12",
   namedAccounts: {
     acc00: {
       default: 0,
