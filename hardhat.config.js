@@ -5,10 +5,10 @@ require("hardhat-deploy");
 module.exports = {
   solidity: "0.8.12",
   namedAccounts: {
-    acc00: {
+    deployer: {
       default: 0,
     },
-    acc01: {
+    client: {
       default: 1,
     },
     acc02: {

@@ -1,9 +1,9 @@
 const { getNamedAccounts, ethers } = require("hardhat");
 
 async function main() {
-  const { acc00 } = await getNamedAccounts();
+  const { deployer } = await getNamedAccounts();
 
-  const WrappedToken = await ethers.getContract("WrappedToken", acc00);
+  const WrappedToken = await ethers.getContract("WrappedToken", deployer);
   console.log(`${await WrappedToken.name()} \t ${await WrappedToken.symbol()}`);
   console.log(`Total Supply: ${await WrappedToken.totalSupply()}\n`);
   let i = 0;

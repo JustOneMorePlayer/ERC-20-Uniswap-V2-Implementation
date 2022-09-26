@@ -1,8 +1,8 @@
 const { getNamedAccounts, ethers } = require("hardhat");
 
 async function main() {
-  const { acc00 } = await getNamedAccounts();
-  const WrappedToken = await ethers.getContract("WrappedToken", acc00);
+  const { deployer } = await getNamedAccounts();
+  const WrappedToken = await ethers.getContract("WrappedToken", deployer);
 
   await WrappedToken.wrapEther({ value: ethers.utils.parseEther("1") });
 }

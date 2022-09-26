@@ -5,6 +5,7 @@ import "./Token.sol";
 import "hardhat/console.sol";
 
 error LiquidityPool__PoolNotEmpty();
+error LiquidityPool__PoolEmpty();
 
 contract LiquidityPool{
     ERC20Token public WETH;
@@ -16,27 +17,18 @@ contract LiquidityPool{
     uint256 constant feeUser = 30;
 
 
-    constructor(address _addressWETH, address _addresstoken, uint256 _valueWETH, uint256 _valueToken){
+    constructor(address _addressWETH, address _addresstoken){
         WETH = ERC20Token(_addressWETH);
         token = ERC20Token(_addresstoken);
 
         liquidityPoolToken = new LiquidityPoolToken(
             string.concat("WETH ", token.name(), " Liquidity Pool Token"), 
             string.concat("WETH", token.symbol(), "LP")
-        );
-
-
-
-        ////ELIMINAR
-        _valueToken = 0;
-        _valueWETH = 0;
-        /////        
-
-
+        );     
     }
 
-    function firstAddLiquidity(uint256 _valueWETH, uint256 _valueToken) public {
-        if(thisTokenBalance() == 0 && thisWETHBalance() == 0) revert LiquidityPool__PoolNotEmpty();
+    function initializePool(uint256 _valueWETH, uint256 _valueToken) public {
+        if(thisWETHBalance() != 0 || thisTokenBalance() != 0) revert LiquidityPool__PoolNotEmpty();
         
         WETH.transferFrom(msg.sender, address(this), _valueWETH);
         token.transferFrom(msg.sender, address(this), _valueToken);
@@ -45,12 +37,34 @@ contract LiquidityPool{
     }
 
     function addLiquidity(uint256 _valueWETH) public{
+        if(thisTokenBalance() == 0 && thisWETHBalance() == 0) revert LiquidityPool__PoolEmpty();
         
+        WETH.transferFrom(msg.sender, address(this), _valueWETH);
+        token.transferFrom(msg.sender, address(this), _valueWETH * thisTokenBalance() / thisWETHBalance());
+
+        liquidityPoolToken.mint(msg.sender, liquidityPoolToken.totalSupply() *  _valueWETH / thisWETHBalance());
     }
 
-    function removeLiquidity() public {}
+    function removeLiquidity(uint256 _valueLPToken) public {
+        //if(thisTokenBalance() == 0 && thisWETHBalance() == 0) revert LiquidityPool__PoolEmpty();
+        liquidityPoolToken.burn(msg.sender, _valueLPToken);
 
-    function swap(bool from, uint256 value) public {}
+        WETH.transfer(msg.sender, thisWETHBalance() * _valueLPToken / (liquidityPoolToken.totalSupply() + _valueLPToken));
+        token.transfer(msg.sender, thisTokenBalance() * _valueLPToken / (liquidityPoolToken.totalSupply() + _valueLPToken));
+    }
+
+    function WETHToTokenSwap(uint256 _valueWETH) public {
+        WETH.transferFrom(msg.sender, address(this), _valueWETH);
+        uint256 valueToken_ = thisTokenBalance() - ((thisWETHBalance() - _valueWETH) * thisTokenBalance()) / thisWETHBalance();
+        token.transfer(msg.sender, valueToken_);
+    }
+
+    function tokenToWETHSwap(uint256 _valueToken) public {
+        token.transferFrom(msg.sender, address(this), _valueToken);
+        uint256 valueWETH_ = thisWETHBalance() - ((thisTokenBalance() - _valueToken) * thisWETHBalance()) / thisTokenBalance();
+        WETH.transfer(msg.sender, valueWETH_);
+
+    }
 
     function thisWETHBalance() internal view returns (uint256) {
         return WETH.getBalanceOf(address(this));

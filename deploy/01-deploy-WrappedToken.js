@@ -1,35 +1,16 @@
 const { getNamedAccounts, ethers, deployments } = require("hardhat")
 
 module.exports = async () => {
-  const { acc00 } = await getNamedAccounts()
+  const { deployer } = await getNamedAccounts()
 
-  await deployments.deploy("WrappedToken1", {
-    from: acc00,
+  await deployments.deploy("WETHToken", {
+    from: deployer,
     contract: "WrappedToken",
     args: ["Wrapped Ethereum", "WETH"],
-    log: true,
-  })
-
-  await deployments.deploy("WrappedToken2", {
-    from: acc00,
-    contract: "WrappedToken",
-    args: ["Wrapped Ethereum", "WETH"],
-    log: true,
-  })
-
-  await deployments.deploy("", {
-    from: acc00,
-    contract: "WrappedToken",
-    args: ["Wrapped Ethereum", "WETH"],
-    log: true,
-  })
-
-  await deployments.deploy("Math", {
-    from: acc00,
-    contract: "Math",
-    args: [],
     log: true,
   })
 
 
 }
+
+
