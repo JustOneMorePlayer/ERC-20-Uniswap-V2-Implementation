@@ -10,6 +10,12 @@ module.exports = async () => {
     log: true,
   })
 
+  await deployments.deploy("Token", {
+    from: deployer,
+    args: ["Token", "TK", ethers.utils.parseEther("100")],
+    log: true
+  })
+
 
 }
 

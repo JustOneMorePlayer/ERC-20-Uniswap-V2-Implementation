@@ -6,7 +6,11 @@ import "./LiquidityPool.sol";
 
 error LiquidityPoolFactory__LiquidityPoolAlreadyExists();
 
+
+
 contract LiquidityPoolFactory{
+    event mintedNewPool(address indexed newLiquidityPoolAddress);
+
     ERC20Token public immutable WETH;
     address public admin;
     LiquidityPool[] liquidityPools;
@@ -20,7 +24,11 @@ contract LiquidityPoolFactory{
 
     function mintNewPool(address _addresstoken) public returns(bool){
        if(poolListing[ERC20Token(_addresstoken).symbol()]) revert LiquidityPoolFactory__LiquidityPoolAlreadyExists();
-       liquidityPools.push(new LiquidityPool(address(WETH), _addresstoken));
+       LiquidityPool newLiquidityPool= new LiquidityPool(address(WETH), _addresstoken);
+       liquidityPools.push(newLiquidityPool);
+
+        emit mintedNewPool(address(newLiquidityPool));
+
        poolListing[ERC20Token(_addresstoken).symbol()] = true;
 
        return true;

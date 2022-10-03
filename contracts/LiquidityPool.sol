@@ -66,12 +66,24 @@ contract LiquidityPool{
 
     }
 
-    function thisWETHBalance() internal view returns (uint256) {
+    function thisWETHBalance() public view returns (uint256) {
         return WETH.getBalanceOf(address(this));
     }
 
-    function thisTokenBalance() internal view returns (uint256) {
+    function thisTokenBalance() public view returns (uint256) {
         return token.getBalanceOf(address(this));
+    }
+
+    function getWETHInTokenPrice() public view returns (uint256){
+        return thisWETHBalance() / thisTokenBalance();
+    }
+
+    function getTokenInWETHPrice() public view returns (uint256){
+        return thisTokenBalance() / thisWETHBalance();
+    }
+
+    function getTokenName() public view returns(string memory){
+        return token.name();
     }
 }
 
